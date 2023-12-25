@@ -65,7 +65,7 @@ model Post {
   publicId    String?
   catName     String?
   category    Category? @relation(fields: [catName], references: [catName])
-  author      User      @relation(fields: [authorEmail], references: [email])
+  author      User?      @relation(fields: [authorEmail], references: [email])
   authorEmail String
   links       String[]
   createdAt   DateTime  @default(now())

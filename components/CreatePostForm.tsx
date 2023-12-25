@@ -1,12 +1,30 @@
 'use client';
 
+import { TCategory } from '@/app/types';
 import { categoriesData } from '@/data';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function CreatePostForm() {
   const [links, setLinks] = useState<string[]>([]);
   const [linkInput, setLinkInput] = useState('');
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [categories, setCategories] = useState<TCategory[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [publicId, setPublicId] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchAllCategories = async () => {
+      const res = await fetch('api/categories');
+      const catNames = await res.json();
+      setCategories(catNames);
+    };
+
+    fetchAllCategories();
+  }, []);
 
   const addLink = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -100,10 +118,10 @@ export default function CreatePostForm() {
 
         <select className='p-3 rounded-md border appearance-none'>
           <option value=''>Select A Category</option>
-          {categoriesData &&
-            categoriesData.map((category) => (
-              <option key={category.id} value={category.name}>
-                {category.name}
+          {categories &&
+            categories.map((category) => (
+              <option key={category.id} value={category.catName}>
+                {category.catName}
               </option>
             ))}
         </select>

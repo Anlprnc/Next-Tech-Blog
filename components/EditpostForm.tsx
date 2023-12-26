@@ -1,11 +1,11 @@
 'use client';
 
-import { TCategory } from '@/app/types';
+import { TCategory, TPost } from '@/app/types';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function CreatePostForm() {
+export default function EditPostForm({ post }: { post: TPost }) {
   const [links, setLinks] = useState<string[]>([]);
   const [linkInput, setLinkInput] = useState('');
   const [title, setTitle] = useState('');
@@ -20,13 +20,31 @@ export default function CreatePostForm() {
 
   useEffect(() => {
     const fetchAllCategories = async () => {
-      const res = await fetch('api/categories');
+      const res = await fetch('/api/categories');
       const catNames = await res.json();
       setCategories(catNames);
     };
 
     fetchAllCategories();
-  }, []);
+
+    const initValues = () => {
+      setTitle(post.title);
+      setContent(post.content);
+      setImageUrl(post.imageUrl || '');
+      setPublicId(post.publicId || '');
+      setSelectedCategory(post.catName || '');
+      setLinks(post.links || []);
+    };
+
+    initValues();
+  }, [
+    post.title,
+    post.content,
+    post.imageUrl,
+    post.publicId,
+    post.catName,
+    post.links,
+  ]);
 
   const addLink = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -50,8 +68,8 @@ export default function CreatePostForm() {
     }
 
     try {
-      const res = await fetch('api/posts/', {
-        method: 'POST',
+      const res = await fetch(`/api/posts/${post.id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -81,10 +99,12 @@ export default function CreatePostForm() {
           onChange={(e) => setTitle(e.target.value)}
           type='text'
           placeholder='Title'
+          value={title}
         />
         <textarea
           onChange={(e) => setContent(e.target.value)}
           placeholder='Content'
+          value={content}
         ></textarea>
 
         {links &&
@@ -160,6 +180,7 @@ export default function CreatePostForm() {
         <select
           onChange={(e) => setSelectedCategory(e.target.value)}
           className='p-3 rounded-md border appearance-none'
+          value={selectedCategory}
         >
           <option value=''>Select A Category</option>
           {categories &&
@@ -171,7 +192,7 @@ export default function CreatePostForm() {
         </select>
 
         <button className='primary-btn' typeof='submit'>
-          Create Post
+          Update Post
         </button>
 
         {error && <div className='p-2 text-red-500 font-bold'>{error}</div>}

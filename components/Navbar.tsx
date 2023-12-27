@@ -36,7 +36,7 @@ export default function Navbar() {
       <div>
         <Link href={'/'}>
           <h1 className="text-dark text-4xl font-bold tracking-tighter">
-            Tech Voyage Chronicle
+            Tech Voyage
           </h1>
         </Link>
         <p className="text-sm">

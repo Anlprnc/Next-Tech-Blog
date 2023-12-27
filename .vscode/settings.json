@@ -1,3 +1,4 @@
 {
-  "editor.suggest.preview": true
+  "editor.suggest.preview": true,
+  "editor.fontFamily": "'Droid Sans Mono', 'monospace', monospace"
 }
